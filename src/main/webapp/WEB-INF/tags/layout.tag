@@ -1,27 +1,23 @@
-<%@ tag trimDirectiveWhitespaces="true" %>
+<%@ tag pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <%@ attribute name="pageName" required="true" %>
 <%@ attribute name="customScript" required="false" fragment="true"%>
 
 <!doctype html>
-<html>
+<html lang="ko">
 <petclinic:htmlHeader/>
 
 <body>
 <petclinic:bodyHeader menuName="${pageName}"/>
 
-<div class="container-fluid">
-    <div class="container xd-container">
+<main>
+    <jsp:doBody/>
+</main>
 
-        <jsp:doBody/>
-
-        <petclinic:pivotal/>
-    </div>
-</div>
+<petclinic:pivotal/>
 <petclinic:footer/>
 <jsp:invoke fragment="customScript" />
 
 </body>
-
 </html>

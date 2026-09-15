@@ -1,45 +1,61 @@
+<%@ tag pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <%@ attribute name="name" required="true" rtexprvalue="true"
               description="Name of the active menu: home, owners, vets or error" %>
 
-<nav class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="<spring:url value="/" htmlEscape="true" />"><span></span></a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
-                <span class="sr-only"><os-p>Toggle navigation</os-p></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse" id="main-navbar">
-            <ul class="nav navbar-nav navbar-right">
+<header>
+    <div class="nav-container">
+        <a href="<spring:url value="/" htmlEscape="true" />" class="logo-group">
+            <div class="logo-icon">🐾</div>
+            <div class="logo-text">
+                <span class="logo-title">PetClinic</span>
+                <span class="logo-subtitle">Smart Animal Hospital · WAS Tier</span>
+            </div>
+        </a>
 
-                <petclinic:menuItem active="${name eq 'home'}" url="/" title="home page">
-                    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-                    <span>Home</span>
-                </petclinic:menuItem>
+        <!-- Mobile Hamburger Toggle Button -->
+        <button type="button" class="mobile-menu-toggle" id="mobile-toggle" aria-label="메뉴 토글" onclick="toggleMobileNav()">
+            <span class="toggle-bar"></span>
+            <span class="toggle-bar"></span>
+            <span class="toggle-bar"></span>
+        </button>
 
-                <petclinic:menuItem active="${name eq 'owners'}" url="/owners/find" title="find owners">
-                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    <span>Find owners</span>
-                </petclinic:menuItem>
-
-                <petclinic:menuItem active="${name eq 'vets'}" url="/vets" title="veterinarians">
-                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                    <span>Veterinarians</span>
-                </petclinic:menuItem>
-
-                <petclinic:menuItem active="${name eq 'error'}" url="/oups"
-                            title="trigger a RuntimeException to see how it is handled">
-                    <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
-                    <span>Error</span>
-                </petclinic:menuItem>
-
-            </ul>
+        <!-- Navigation Links and Status Badge -->
+        <div class="header-nav-wrap" id="header-nav">
+            <nav class="nav-menu">
+                <a href="<spring:url value="/" htmlEscape="true" />" class="nav-item ${name eq 'home' ? 'active' : ''}">
+                    <span>🏠 홈</span>
+                </a>
+                <a href="<spring:url value="/owners/find" htmlEscape="true" />" class="nav-item ${name eq 'owners' ? 'active' : ''}">
+                    <span>📋 보호자 &amp; 환자</span>
+                </a>
+                <a href="<spring:url value="/vets" htmlEscape="true" />" class="nav-item ${name eq 'vets' ? 'active' : ''}">
+                    <span>🩺 수의사 명단</span>
+                </a>
+                <a href="<spring:url value="/oups" htmlEscape="true" />" class="nav-item ${name eq 'error' ? 'active' : ''}">
+                    <span>⚡ 장애 검증</span>
+                </a>
+                <a href="<spring:url value="/test.jsp" htmlEscape="true" />" class="nav-item">
+                    <span>📊 3-Tier 진단</span>
+                </a>
+                <a href="<spring:url value="/index.html" htmlEscape="true" />" class="nav-item nav-item-web">
+                    <span>🌐 WEB 메인</span>
+                </a>
+            </nav>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>WAS Tier 정상 서빙 중</span>
+            </div>
         </div>
     </div>
-</nav>
+</header>
+
+<script>
+function toggleMobileNav() {
+    var nav = document.getElementById('header-nav');
+    var btn = document.getElementById('mobile-toggle');
+    if (nav) nav.classList.toggle('open');
+    if (btn) btn.classList.toggle('open');
+}
+</script>

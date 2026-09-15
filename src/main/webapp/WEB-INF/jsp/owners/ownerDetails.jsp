@@ -1,96 +1,138 @@
-<%@ page session="false" trimDirectiveWhitespaces="true" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 <petclinic:layout pageName="owners">
+    <div class="page-header-card">
+        <h2>👤 보호자 및 반려동물 상세 정보</h2>
+        <p>보호자 기본 프로필과 등록된 반려동물의 진료 이력을 확인하고 관리합니다.</p>
+    </div>
 
-    <h2 id="ownerInformation">Owner Information</h2>
+    <!-- Owner Information Card -->
+    <div class="modern-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
+            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">
+                보호자 기본 프로필
+            </h3>
+            <div style="display: flex; gap: 8px;">
+                <spring:url value="{ownerId}/edit" var="editUrl">
+                    <spring:param name="ownerId" value="${owner.id}"/>
+                </spring:url>
+                <a href="${fn:escapeXml(editUrl)}" class="btn btn-default" style="font-size: 13px; padding: 8px 14px;">
+                    <span>✏️ 정보 수정</span>
+                </a>
+                <spring:url value="{ownerId}/pets/new" var="addPetUrl">
+                    <spring:param name="ownerId" value="${owner.id}"/>
+                </spring:url>
+                <a href="${fn:escapeXml(addPetUrl)}" class="btn btn-primary" style="font-size: 13px; padding: 8px 14px;">
+                    <span>🐾 신규 반려동물 추가</span>
+                </a>
+            </div>
+        </div>
 
-    <table class="table table-striped" aria-describedby="ownerInformation">
-        <tr>
-            <th id="name">Name</th>
-            <td headers="name"><strong><c:out value="${owner.firstName} ${owner.lastName}"/></strong></td>
-        </tr>
-        <tr>
-            <th id="address">Address</th>
-            <td headers="address"><c:out value="${owner.address}"/></td>
-        </tr>
-        <tr>
-            <th id="city">City</th>
-            <td headers="city"><c:out value="${owner.city}"/></td>
-        </tr>
-        <tr>
-            <th id="telephone">Telephone</th>
-            <td headers="telephone"><c:out value="${owner.telephone}"/></td>
-        </tr>
-    </table>
+        <div class="table-responsive-wrapper" style="margin-bottom: 0;">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th style="width: 25%; background: #f8fafc; font-weight: 700; color: #475569;">성명 (Name)</th>
+                    <td style="font-weight: 700; color: #0f172a;"><c:out value="${owner.firstName} ${owner.lastName}"/></td>
+                </tr>
+                <tr>
+                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">주소 (Address)</th>
+                    <td><c:out value="${owner.address}"/></td>
+                </tr>
+                <tr>
+                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">도시 (City)</th>
+                    <td><c:out value="${owner.city}"/></td>
+                </tr>
+                <tr>
+                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">연락처 (Telephone)</th>
+                    <td><c:out value="${owner.telephone}"/></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <spring:url value="{ownerId}/edit" var="editUrl">
-        <spring:param name="ownerId" value="${owner.id}"/>
-    </spring:url>
-    <a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Edit Owner</a>
+    <!-- Pets and Visits Section -->
+    <div class="modern-card">
+        <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
+            반려동물 및 진료/방문 기록
+        </h3>
 
-    <spring:url value="{ownerId}/pets/new" var="addUrl">
-        <spring:param name="ownerId" value="${owner.id}"/>
-    </spring:url>
-    <a href="${fn:escapeXml(addUrl)}" class="btn btn-default">Add New Pet</a>
-
-    <br/>
-    <br/>
-    <br/>
-    <h2 id="petsAndVisits">Pets and Visits</h2>
-
-    <table class="table table-striped" aria-describedby="petsAndVisits">
         <c:forEach var="pet" items="${owner.pets}">
+            <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 20px;">🐶</span>
+                        <div>
+                            <span style="font-size: 17px; font-weight: 800; color: #0f172a;"><c:out value="${pet.name}"/></span>
+                            <span class="badge-specialty" style="margin-left: 8px;"><c:out value="${pet.type.name}"/></span>
+                            <span style="font-size: 12px; color: #64748b; margin-left: 8px;">생년월일: <petclinic:localDate date="${pet.birthDate}" pattern="yyyy-MM-dd"/></span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <spring:url value="{ownerId}/pets/{petId}/edit" var="petUrl">
+                            <spring:param name="ownerId" value="${owner.id}"/>
+                            <spring:param name="petId" value="${pet.id}"/>
+                        </spring:url>
+                        <a href="${fn:escapeXml(petUrl)}" class="btn btn-default" style="font-size: 12px; padding: 6px 12px;">
+                            <span>✏️ 정보 수정</span>
+                        </a>
+                        <spring:url value="{ownerId}/pets/{petId}/visits/new" var="visitUrl">
+                            <spring:param name="ownerId" value="${owner.id}"/>
+                            <spring:param name="petId" value="${pet.id}"/>
+                        </spring:url>
+                        <a href="${fn:escapeXml(visitUrl)}" class="btn btn-primary" style="font-size: 12px; padding: 6px 12px;">
+                            <span>🩺 진료 기록 추가</span>
+                        </a>
+                    </div>
+                </div>
 
-            <tr>
-                <th scope="col">
-                    <dl class="dl-horizontal">
-                        <dt>Name</dt>
-                        <dd><c:out value="${pet.name}"/></dd>
-                        <dt>Birth Date</dt>
-                        <dd><petclinic:localDate date="${pet.birthDate}" pattern="yyyy-MM-dd"/></dd>
-                        <dt>Type</dt>
-                        <dd><c:out value="${pet.type.name}"/></dd>
-                    </dl>
-                </th>
-                <td>
-                    <table class="table-condensed" aria-describedby="petsAndVisits">
+                <!-- Visits table for this pet -->
+                <div class="table-responsive-wrapper" style="margin-bottom: 0;">
+                    <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th id="visitDate">Visit Date</th>
-                            <th id="visitDescription">Description</th>
+                            <th style="width: 25%;">방문/진료 일자</th>
+                            <th>진료 내용 및 소견</th>
                         </tr>
                         </thead>
+                        <tbody>
                         <c:forEach var="visit" items="${pet.visits}">
                             <tr>
-                                <td headers="visitDate"><petclinic:localDate date="${visit.date}" pattern="yyyy-MM-dd"/></td>
-                                <td headers="visitDescription"><c:out value="${visit.description}"/></td>
+                                <td style="font-weight: 600; color: #0f172a;">
+                                    <petclinic:localDate date="${visit.date}" pattern="yyyy-MM-dd"/>
+                                </td>
+                                <td><c:out value="${visit.description}"/></td>
                             </tr>
                         </c:forEach>
-                        <tr>
-                            <td>
-                                <spring:url value="/owners/{ownerId}/pets/{petId}/edit" var="petUrl">
-                                    <spring:param name="ownerId" value="${owner.id}"/>
-                                    <spring:param name="petId" value="${pet.id}"/>
-                                </spring:url>
-                                <a href="${fn:escapeXml(petUrl)}">Edit Pet</a>
-                            </td>
-                            <td>
-                                <spring:url value="/owners/{ownerId}/pets/{petId}/visits/new" var="visitUrl">
-                                    <spring:param name="ownerId" value="${owner.id}"/>
-                                    <spring:param name="petId" value="${pet.id}"/>
-                                </spring:url>
-                                <a href="${fn:escapeXml(visitUrl)}">Add Visit</a>
-                            </td>
-                        </tr>
+                        <c:if test="${empty pet.visits}">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #94a3b8; padding: 18px;">
+                                    등록된 진료 및 방문 이력이 없습니다.
+                                </td>
+                            </tr>
+                        </c:if>
+                        </tbody>
                     </table>
-                </td>
-            </tr>
-
+                </div>
+            </div>
         </c:forEach>
-    </table>
 
+        <c:if test="${empty owner.pets}">
+            <div style="text-align: center; padding: 32px; color: #94a3b8;">
+                등록된 반려동물이 없습니다. 상단의 '신규 반려동물 추가' 버튼을 눌러 등록해주세요.
+            </div>
+        </c:if>
+    </div>
+
+    <div>
+        <a href="<spring:url value="/owners/find" htmlEscape="true"/>" class="btn btn-default">
+            <span>&larr; 보호자 목록으로 돌아가기</span>
+        </a>
+    </div>
 </petclinic:layout>
