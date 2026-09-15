@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body},'vets')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">👨‍⚕️</div>
+      <div>
+        <h1 class="page-title">Veterinarians</h1>
+        <p class="page-subtitle">PetClinic 전문 의료진 소개 · 세부 전공 분야 및 의료진 현황을 투명하게 안내합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Card Wrapper with generous top/bottom margins -->
+  <div class="glass-card table-card-wrapper">
+    <div class="table-header-bar">
+      <div class="table-header-title">
+        <span class="fa fa-stethoscope"></span> 의료진 명단 및 진료 세부 전공
+      </div>
+      <div class="table-header-meta">
+        총 <strong th:text="${listVets.size()}">6</strong>명의 전문 수의사가 진료 중입니다
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="vets" class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 35%;">수의사 성명 (Name)</th>
+            <th style="width: 65%;">전문 진료 분야 (Specialties)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="vet : ${listVets}">
+            <td>
+              <div class="vet-name-cell">
+                <div class="vet-avatar">🩺</div>
+                <div class="vet-name-text">
+                  <strong th:text="${vet.firstName + ' ' + vet.lastName}">James Carter</strong>
+                  <span class="vet-badge-staff">전문의</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="specialty-badges">
+                <span th:each="specialty : ${vet.specialties}"
+                      th:class="${'badge-specialty ' + (specialty.name == 'radiology' ? 'badge-purple' : (specialty.name == 'surgery' ? 'badge-emerald' : 'badge-amber'))}"
+                      th:text="${specialty.name == 'radiology' ? '방사선학 (Radiology)' : (specialty.name == 'surgery' ? '외과 수술 (Surgery)' : (specialty.name == 'dentistry' ? '치과 진료 (Dentistry)' : specialty.name))}">
+                  radiology
+                </span>
+                <span th:if="${vet.nrOfSpecialties == 0}" class="badge-general">
+                  일반 종합 진료 (General Practice)
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Perfectly Centered Modern Pagination -->
+  <div class="pagination-container" th:if="${totalPages > 1}">
+    <ul class="pagination-modern">
+      <!-- First Page -->
+      <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/vets.html?page=1'}" class="page-link" title="첫 페이지">
+          <span class="fa fa-angle-double-left"></span>
+        </a>
+      </li>
+
+      <!-- Previous Page -->
+      <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/vets.html?page=__${currentPage - 1}__'}" class="page-link" title="이전 페이지">
+          <span class="fa fa-angle-left"></span>
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <li th:each="i: ${#numbers.sequence(1, totalPages)}" 
+          th:class="${currentPage == i} ? 'page-item active' : 'page-item'">
+        <a th:href="@{'/vets.html?page=__${i}__'}" class="page-link">
+          <span th:text="${i}">1</span>
+        </a>
+      </li>
+
+      <!-- Next Page -->
+      <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/vets.html?page=__${currentPage + 1}__'}" class="page-link" title="다음 페이지">
+          <span class="fa fa-angle-right"></span>
+        </a>
+      </li>
+
+      <!-- Last Page -->
+      <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/vets.html?page=__${totalPages}__'}" class="page-link" title="마지막 페이지">
+          <span class="fa fa-angle-double-right"></span>
+        </a>
+      </li>
+    </ul>
+    
+    <div class="pagination-info">
+      Page <strong th:text="${currentPage}">1</strong> of <strong th:text="${totalPages}">2</strong>
+    </div>
+  </div>
+
+</body>
+</html>

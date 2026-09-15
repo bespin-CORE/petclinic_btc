@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" 
+      th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">📋</div>
+      <div>
+        <h1 class="page-title">Owners List</h1>
+        <p class="page-subtitle">보호자 전체 목록 · 등록된 보호자 및 연결된 반려동물 현황입니다.</p>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <a class="btn-modern btn-primary-modern" th:href="@{/owners/new}">
+        <span class="fa fa-plus-circle"></span> Add Owner (신규 등록)
+      </a>
+    </div>
+  </div>
+
+  <!-- Table Card Wrapper -->
+  <div class="glass-card table-card-wrapper">
+    <div class="table-header-bar">
+      <div class="table-header-title">
+        <span class="fa fa-users"></span> 등록된 보호자 명단
+      </div>
+      <div class="table-header-meta">
+        보호자 이름을 클릭하면 상세 진료 기록 및 반려동물 관리 화면으로 이동합니다.
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="owners" class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">보호자 성명 (Name)</th>
+            <th style="width: 28%;">주소 (Address)</th>
+            <th style="width: 15%;">도시 (City)</th>
+            <th style="width: 15%;">연락처 (Telephone)</th>
+            <th style="width: 20%;">반려동물 (Pets)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="owner : ${listOwners}">
+            <td>
+              <a th:href="@{/owners/__${owner.id}__}" class="owner-name-link">
+                <span class="fa fa-user-circle"></span>
+                <strong th:text="${owner.firstName + ' ' + owner.lastName}">George Franklin</strong>
+              </a>
+            </td>
+            <td th:text="${owner.address}">110 W. Liberty St.</td>
+            <td>
+              <span class="city-badge" th:text="${owner.city}">Madison</span>
+            </td>
+            <td th:text="${owner.telephone}">6085551023</td>
+            <td>
+              <div class="pet-badges-wrap">
+                <span class="badge-pet-pill" th:each="pet : ${owner.pets}" th:text="'🐾 ' + ${pet.name}">
+                  🐾 Leo
+                </span>
+                <span th:if="${#lists.isEmpty(owner.pets)}" class="badge-none">등록된 펫 없음</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Centered Pagination -->
+  <div class="pagination-container" th:if="${totalPages > 1}">
+    <ul class="pagination-modern">
+      <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/owners?page=1'}" class="page-link" title="첫 페이지">
+          <span class="fa fa-angle-double-left"></span>
+        </a>
+      </li>
+
+      <li th:class="${currentPage == 1} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/owners?page=__${currentPage - 1}__'}" class="page-link" title="이전 페이지">
+          <span class="fa fa-angle-left"></span>
+        </a>
+      </li>
+
+      <li th:each="i: ${#numbers.sequence(1, totalPages)}" 
+          th:class="${currentPage == i} ? 'page-item active' : 'page-item'">
+        <a th:href="@{'/owners?page=' + ${i}}" class="page-link">
+          <span th:text="${i}">1</span>
+        </a>
+      </li>
+
+      <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/owners?page=__${currentPage + 1}__'}" class="page-link" title="다음 페이지">
+          <span class="fa fa-angle-right"></span>
+        </a>
+      </li>
+
+      <li th:class="${currentPage == totalPages} ? 'page-item disabled' : 'page-item'">
+        <a th:href="@{'/owners?page=__${totalPages}__'}" class="page-link" title="마지막 페이지">
+          <span class="fa fa-angle-double-right"></span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="pagination-info">
+      Page <strong th:text="${currentPage}">1</strong> of <strong th:text="${totalPages}">2</strong>
+    </div>
+  </div>
+
+</body>
+</html>

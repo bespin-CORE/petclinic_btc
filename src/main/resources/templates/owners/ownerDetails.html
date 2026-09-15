@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">👤</div>
+      <div>
+        <h1 class="page-title">Owner Information</h1>
+        <p class="page-subtitle">보호자 상세 정보 및 등록된 반려동물 진료/방문 관리 화면입니다.</p>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <a th:href="@{/owners/find}" class="btn-modern btn-outline-modern">
+        <span class="fa fa-arrow-left"></span> 목록으로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <div th:if="${message}" class="alert-modern alert-success" id="success-message">
+    <span class="fa fa-check-circle"></span> <span th:text="${message}"></span>
+  </div>
+
+  <div th:if="${error}" class="alert-modern alert-danger" id="error-message">
+    <span class="fa fa-exclamation-triangle"></span> <span th:text="${error}"></span>
+  </div>
+
+  <!-- Owner Details Profile Card -->
+  <div class="glass-card profile-card">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <span class="fa fa-user"></span>
+      </div>
+      <div class="profile-title-area">
+        <h2 class="profile-name" th:text="${owner.firstName + ' ' + owner.lastName}">George Franklin</h2>
+        <span class="profile-badge">등록 회원</span>
+      </div>
+      <div class="profile-actions">
+        <a th:href="@{__${owner.id}__/edit}" class="btn-modern btn-primary-modern btn-sm">
+          <span class="fa fa-pencil"></span> Edit Owner (정보 수정)
+        </a>
+        <a th:href="@{__${owner.id}__/pets/new}" class="btn-modern btn-secondary-modern btn-sm">
+          <span class="fa fa-plus"></span> Add New Pet (새 반려동물 등록)
+        </a>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-info-item">
+        <span class="info-label">주소 (Address)</span>
+        <strong class="info-value" th:text="${owner.address}">110 W. Liberty St.</strong>
+      </div>
+      <div class="profile-info-item">
+        <span class="info-label">도시 (City)</span>
+        <strong class="info-value" th:text="${owner.city}">Madison</strong>
+      </div>
+      <div class="profile-info-item">
+        <span class="info-label">연락처 (Telephone)</span>
+        <strong class="info-value" th:text="${owner.telephone}">6085551023</strong>
+      </div>
+      <div class="profile-info-item">
+        <span class="info-label">등록 반려동물 수</span>
+        <strong class="info-value" th:text="${#lists.size(owner.pets)} + ' 마리'">1 마리</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pets and Visits Section -->
+  <div class="section-title-wrap">
+    <h3 class="section-title">
+      <span>🐾</span> 등록된 반려동물 및 진료 방문 내역 (Pets and Visits)
+    </h3>
+  </div>
+
+  <div th:if="${#lists.isEmpty(owner.pets)}" class="glass-card empty-card">
+    <div class="empty-icon">🐶</div>
+    <h4>등록된 반려동물이 없습니다.</h4>
+    <p>상단의 [Add New Pet] 버튼을 눌러 소중한 반려동물을 등록해 주세요.</p>
+  </div>
+
+  <div class="pets-grid" th:unless="${#lists.isEmpty(owner.pets)}">
+    <div class="glass-card pet-card" th:each="pet : ${owner.pets}">
+      <div class="pet-card-header">
+        <div class="pet-title-box">
+          <span class="pet-type-icon">🐕</span>
+          <div>
+            <h4 class="pet-name" th:text="${pet.name}">Leo</h4>
+            <span class="pet-type-badge" th:text="${pet.type}">cat</span>
+          </div>
+        </div>
+        <div class="pet-actions">
+          <a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}" class="btn-icon" title="펫 정보 수정">
+            <span class="fa fa-pencil"></span>
+          </a>
+          <a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" class="btn-modern btn-primary-modern btn-xs">
+            <span class="fa fa-calendar-plus-o"></span> 진료 예약 (Add Visit)
+          </a>
+        </div>
+      </div>
+
+      <div class="pet-meta-info">
+        <div class="meta-item">
+          <span class="meta-label">출생일:</span>
+          <strong class="meta-value" th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}">2010-09-07</strong>
+        </div>
+      </div>
+
+      <!-- Visits History Table -->
+      <div class="visits-history-wrap">
+        <h5 class="visits-title">
+          <span class="fa fa-history"></span> 진료 및 방문 이력
+        </h5>
+        
+        <div th:if="${#lists.isEmpty(pet.visits)}" class="no-visits">
+          아직 진료 방문 기록이 없습니다.
+        </div>
+
+        <table class="modern-table visits-table" th:unless="${#lists.isEmpty(pet.visits)}">
+          <thead>
+            <tr>
+              <th style="width: 35%;">방문 일자 (Date)</th>
+              <th style="width: 65%;">진료 소견 및 처방 (Description)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="visit : ${pet.visits}">
+              <td>
+                <span class="visit-date-badge" th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}">2013-01-01</span>
+              </td>
+              <td th:text="${visit.description}">rabies shot</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

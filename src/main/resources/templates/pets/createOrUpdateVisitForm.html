@@ -1,0 +1,86 @@
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">📅</div>
+      <div>
+        <h1 class="page-title" th:text="${visit['new']} ? 'Add New Visit' : 'Edit Visit'">Add New Visit</h1>
+        <p class="page-subtitle">반려동물 <strong th:text="${pet.name}">Leo</strong>의 새로운 진료 및 방문 일정을 예약합니다.</p>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <a th:href="@{/owners/__${pet.owner.id}__}" class="btn-modern btn-outline-modern">
+        <span class="fa fa-arrow-left"></span> 보호자 상세로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <!-- Pet Summary Card -->
+  <div class="glass-card" style="padding: 20px 24px; margin-bottom: 24px;">
+    <div style="display: flex; gap: 32px; align-items: center; flex-wrap: wrap;">
+      <div><span style="font-size: 12px; color: #64748b; font-weight: 600;">반려동물 이름</span><br/><strong style="font-size: 16px; color: #1e293b;" th:text="${pet.name}">Leo</strong></div>
+      <div><span style="font-size: 12px; color: #64748b; font-weight: 600;">출생일</span><br/><strong style="font-size: 16px; color: #1e293b;" th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}">2010-09-07</strong></div>
+      <div><span style="font-size: 12px; color: #64748b; font-weight: 600;">동물 종류</span><br/><span class="pet-type-badge" th:text="${pet.type}">cat</span></div>
+      <div><span style="font-size: 12px; color: #64748b; font-weight: 600;">담당 보호자</span><br/><strong style="font-size: 16px; color: #1e293b;" th:text="${pet.owner.firstName + ' ' + pet.owner.lastName}">George Franklin</strong></div>
+    </div>
+  </div>
+
+  <div class="glass-card form-card" style="margin-bottom: 32px;">
+    <form th:object="${visit}" method="post">
+      <input type="hidden" name="petId" th:value="${pet.id}" />
+
+      <div class="form-grid">
+        <div class="form-group-modern form-full">
+          <label class="form-label" for="date">진료 방문 일자 (Date) <span class="req">*</span></label>
+          <input class="modern-input" type="date" th:field="*{date}" id="date" />
+          <span class="error-text" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">오류</span>
+        </div>
+
+        <div class="form-group-modern form-full">
+          <label class="form-label" for="description">진료 소견 및 증상 설명 (Description) <span class="req">*</span></label>
+          <textarea class="modern-input" th:field="*{description}" id="description" rows="3" placeholder="내원 목적 및 주요 증상을 입력하세요 (예: 정기 예방접종, 피부염 진료 등)"></textarea>
+          <span class="error-text" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">오류</span>
+        </div>
+      </div>
+
+      <div class="form-actions-bar">
+        <button class="btn-modern btn-primary-modern" type="submit">
+          <span class="fa fa-calendar-check-o"></span> Add Visit (진료 예약 완료)
+        </button>
+        <a th:href="@{/owners/__${pet.owner.id}__}" class="btn-modern btn-outline-modern">취소</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Previous Visits -->
+  <div class="glass-card table-card-wrapper" th:unless="${#lists.isEmpty(pet.visits)}">
+    <div class="table-header-bar">
+      <div class="table-header-title">
+        <span class="fa fa-history"></span> 이전 진료 기록 (Previous Visits)
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 30%;">방문 일자</th>
+            <th style="width: 70%;">진료 내용 및 처방</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="v : ${pet.visits}">
+            <td>
+              <span class="visit-date-badge" th:text="${#temporals.format(v.date, 'yyyy-MM-dd')}">2013-01-01</span>
+            </td>
+            <td th:text="${v.description}">rabies shot</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

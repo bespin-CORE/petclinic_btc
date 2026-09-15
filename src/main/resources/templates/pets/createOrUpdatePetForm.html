@@ -1,0 +1,63 @@
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">🐾</div>
+      <div>
+        <h1 class="page-title" th:text="${pet['new']} ? 'Add New Pet' : 'Edit Pet'">Add New Pet</h1>
+        <p class="page-subtitle">보호자 <strong th:text="${owner?.firstName + ' ' + owner?.lastName}">George Franklin</strong>님의 새로운 반려동물을 등록합니다.</p>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <a th:href="@{/owners/__${owner?.id}__}" class="btn-modern btn-outline-modern">
+        <span class="fa fa-arrow-left"></span> 보호자 상세로 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <div class="glass-card form-card">
+    <form th:object="${pet}" id="add-pet-form" method="post">
+      <input type="hidden" name="id" th:value="*{id}" />
+      
+      <div class="form-grid">
+        <div class="form-group-modern form-full">
+          <label class="form-label">보호자 성명 (Owner)</label>
+          <div class="modern-input" style="background: #f8fafc; color: #475569; font-weight: 700;" th:text="${owner?.firstName + ' ' + owner?.lastName}">George Franklin</div>
+        </div>
+
+        <div class="form-group-modern form-full">
+          <label class="form-label" for="name">반려동물 이름 (Pet Name) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{name}" id="name" placeholder="예: Leo, Max, Bella" />
+          <span class="error-text" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">오류</span>
+        </div>
+
+        <div class="form-group-modern">
+          <label class="form-label" for="birthDate">생년월일 (Birth Date) <span class="req">*</span></label>
+          <input class="modern-input" type="date" th:field="*{birthDate}" id="birthDate" />
+          <span class="error-text" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}">오류</span>
+        </div>
+
+        <div class="form-group-modern">
+          <label class="form-label" for="type">축종/동물 종류 (Pet Type) <span class="req">*</span></label>
+          <select class="modern-input" th:field="*{type}" id="type">
+            <option th:each="t : ${types}" th:value="${t.name}" th:text="${t.name}">dog</option>
+          </select>
+          <span class="error-text" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">오류</span>
+        </div>
+      </div>
+
+      <div class="form-actions-bar">
+        <button class="btn-modern btn-primary-modern" type="submit">
+          <span class="fa fa-check"></span>
+          <span th:text="${pet['new']} ? 'Add Pet (반려동물 등록)' : 'Update Pet (수정 저장)'">Add Pet</span>
+        </button>
+        <a th:href="@{/owners/__${owner?.id}__}" class="btn-modern btn-outline-modern">취소</a>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

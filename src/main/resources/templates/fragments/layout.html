@@ -1,0 +1,109 @@
+<!doctype html>
+<html th:fragment="layout (template, menu)" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.png}">
+
+  <title>PetClinic · 스마트 반려동물 케어 센터</title>
+
+  <!-- Pretendard Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/resources/css/petclinic.css}" />
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+
+</head>
+
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a th:href="@{/}" class="logo-group">
+        <div class="logo-icon">🐾</div>
+        <div class="logo-text">
+          <span class="logo-title">PetClinic</span>
+          <span class="logo-subtitle">Smart Animal Hospital · Spring Boot 3.2</span>
+        </div>
+      </a>
+
+      <nav class="nav-menu-wrap" role="navigation">
+        <ul class="nav-menu">
+
+          <li class="nav-item-wrapper">
+            <a th:class="${menu=='home' ? 'nav-item active' : 'nav-item'}" th:href="@{/}" title="홈">
+              <span class="fa fa-home"></span>
+              <span>Home</span>
+            </a>
+          </li>
+
+          <li class="nav-item-wrapper">
+            <a th:class="${menu=='owners' ? 'nav-item active' : 'nav-item'}" th:href="@{/owners/find}" title="보호자 조회">
+              <span class="fa fa-search"></span>
+              <span>Find owners</span>
+            </a>
+          </li>
+
+          <li class="nav-item-wrapper">
+            <a th:class="${menu=='vets' ? 'nav-item active' : 'nav-item'}" th:href="@{/vets.html}" title="수의사 목록">
+              <span class="fa fa-user-md"></span>
+              <span>Veterinarians</span>
+            </a>
+          </li>
+
+          <li class="nav-item-wrapper">
+            <a th:class="${menu=='error' ? 'nav-item active' : 'nav-item'}" th:href="@{/oups}" title="장애 처리 검증 (Demo)">
+              <span class="fa fa-exclamation-triangle"></span>
+              <span>Error</span>
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          WAS Tier (Spring Boot 3.2)
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper with Minimum Screen Height -->
+  <main class="main-wrapper">
+    <div class="container xd-container">
+      <th:block th:insert="${template}" />
+    </div>
+  </main>
+
+  <!-- Sticky Global Footer (Always at bottom, never overlaps) -->
+  <footer class="footer-global">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span class="footer-logo">🐾 PetClinic WAS Tier</span>
+        <span>AWS 2팀 중간 프로젝트 · 3-Tier Enterprise Cloud Architecture</span>
+      </div>
+      <div class="footer-right">
+        <span class="tech-badge">Spring Boot 3.2.5</span>
+        <span class="tech-badge">Java 17 LTS</span>
+        <span class="tech-badge">Apache Tomcat 10.1</span>
+        <span class="tech-badge">Jakarta EE 10</span>
+      </div>
+    </div>
+  </footer>
+
+  <script th:src="@{/webjars/bootstrap/5.3.2/dist/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+
+</html>

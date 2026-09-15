@@ -1,0 +1,68 @@
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+
+<body>
+
+  <div class="page-header">
+    <div class="page-title-group">
+      <div class="page-icon-badge">📝</div>
+      <div>
+        <h1 class="page-title" th:text="${owner['new']} ? 'Add New Owner' : 'Edit Owner'">Add New Owner</h1>
+        <p class="page-subtitle">보호자 기본 인적 사항 및 비상 연락처를 등록/수정합니다.</p>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <a th:href="@{/owners/find}" class="btn-modern btn-outline-modern">
+        <span class="fa fa-arrow-left"></span> 취소하고 돌아가기
+      </a>
+    </div>
+  </div>
+
+  <div class="glass-card form-card">
+    <form th:object="${owner}" id="add-owner-form" method="post">
+      
+      <div class="form-grid">
+        <div class="form-group-modern">
+          <label class="form-label" for="firstName">이름 (First Name) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{firstName}" id="firstName" placeholder="예: George" />
+          <span class="error-text" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">오류</span>
+        </div>
+
+        <div class="form-group-modern">
+          <label class="form-label" for="lastName">성 (Last Name) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{lastName}" id="lastName" placeholder="예: Franklin" />
+          <span class="error-text" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">오류</span>
+        </div>
+
+        <div class="form-group-modern form-full">
+          <label class="form-label" for="address">주소 (Address) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{address}" id="address" placeholder="예: 110 W. Liberty St." />
+          <span class="error-text" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">오류</span>
+        </div>
+
+        <div class="form-group-modern">
+          <label class="form-label" for="city">도시 (City) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{city}" id="city" placeholder="예: Madison" />
+          <span class="error-text" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">오류</span>
+        </div>
+
+        <div class="form-group-modern">
+          <label class="form-label" for="telephone">연락처 (Telephone) <span class="req">*</span></label>
+          <input class="modern-input" th:field="*{telephone}" id="telephone" placeholder="숫자 10자리 입력 (예: 6085551023)" maxlength="10" />
+          <span class="error-text" th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}">오류</span>
+        </div>
+      </div>
+
+      <div class="form-actions-bar">
+        <button class="btn-modern btn-primary-modern" type="submit">
+          <span class="fa fa-check"></span>
+          <span th:text="${owner['new']} ? 'Add Owner (보호자 등록 완료)' : 'Update Owner (수정 저장)'">Add Owner</span>
+        </button>
+        <a th:href="@{/owners/find}" class="btn-modern btn-outline-modern">취소</a>
+      </div>
+
+    </form>
+  </div>
+
+</body>
+</html>
