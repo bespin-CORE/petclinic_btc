@@ -37,10 +37,8 @@
     <!-- Enables scanning for @Cacheable annotation -->
     <cache:annotation-driven/>
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager"
-        p:cacheManager-ref="ehcache"/>
-
-    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
-        p:configLocation="classpath:cache/ehcache.xml"/>
+    <!-- NoOpCacheManager: 로컬 힙 메모리 캐싱(EhCache)을 완전히 비활성화하여 WAS 무상태성(Stateless)을 보장함 -->
+    <!-- 향후 ElastiCache Redis 프로비저닝 시 RedisCacheManager로 전환 가능 -->
+    <bean id="cacheManager" class="org.springframework.cache.support.NoOpCacheManager"/>
 
 </beans>

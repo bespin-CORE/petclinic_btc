@@ -10,7 +10,7 @@
 <%@ page import="java.sql.ResultSet" %>
 <%
     // =========================================================================
-    // [★ C 담당 - 이지형 직접 책임] 3-Tier 엔드투엔드 헬스체크 대시보드 (test.jsp)
+    // 3-Tier 엔드투엔드 헬스체크 대시보드 (test.jsp)
     // =========================================================================
 
     // 1. WAS 서버 호스트 정보
@@ -406,7 +406,7 @@
     </div>
 
     <div class="footer-note">
-        [★ C 담당 - 이지형 직접 책임] · Apache Tomcat 9 &bull; Spring Framework &bull; MySQL &bull; Redis
+        PetClinic WAS Tier &bull; Apache Tomcat 9 &bull; Spring Framework &bull; MySQL &bull; Redis
     </div>
 </div>
 

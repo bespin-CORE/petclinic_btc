@@ -11,8 +11,10 @@
 <body>
 <petclinic:bodyHeader menuName="${pageName}"/>
 
-<main>
-    <jsp:doBody/>
+<main class="main-wrapper">
+    <div class="xd-container">
+        <jsp:doBody/>
+    </div>
 </main>
 
 <petclinic:pivotal/>

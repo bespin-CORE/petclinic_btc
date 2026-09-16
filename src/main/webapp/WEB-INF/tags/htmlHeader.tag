@@ -17,6 +17,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Core Bootstrap & Petclinic CSS -->
+    <spring:url value="/resources/css/petclinic.css" var="petclinicCss"/>
+    <link href="${petclinicCss}" rel="stylesheet"/>
+
     <!-- Web Tier Unified Design System CSS -->
     <spring:url value="/css/style.css" var="styleCss"/>
     <link href="${styleCss}" rel="stylesheet"/>
