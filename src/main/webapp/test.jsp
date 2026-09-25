@@ -8,6 +8,9 @@
 <%@ page import="java.sql.DriverManager" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
+<%@ page import="javax.sql.DataSource" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
 <%
     // =========================================================================
     // 3-Tier 엔드투엔드 헬스체크 대시보드 (test.jsp)
@@ -57,27 +60,34 @@
     if (proto == null) proto = request.getScheme();
     String albTraceId = request.getHeader("X-Amzn-Trace-Id");
 
-    // 5. DB 연결 상태 테스트 (로컬 H2 또는 RDS MySQL)
+    // 5. DB 연결 상태 테스트 (Spring DataSource 연동 및 RDS MySQL / H2 감지)
     boolean dbConnected = false;
     String dbStatusMsg = "Checking...";
     long dbPingTimeMs = -1;
-    String dbUrl = System.getProperty("spring.datasource.url");
-    if (dbUrl == null || dbUrl.isEmpty()) {
-        dbUrl = "jdbc:h2:mem:petclinic (기본 인메모리 DB)";
-    }
+    String dbUrl = "Unknown";
     
-    long startTime = System.currentTimeMillis();
     try {
-        Class.forName("org.h2.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:h2:mem:petclinic", "sa", "");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT 1");
-        if (rs.next()) {
-            dbConnected = true;
-            dbPingTimeMs = System.currentTimeMillis() - startTime;
-            dbStatusMsg = "연결 성공 (Query Latency: " + dbPingTimeMs + "ms)";
+        ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(application);
+        DataSource ds = (ac != null) ? ac.getBean(DataSource.class) : null;
+        if (ds != null) {
+            long startTime = System.currentTimeMillis();
+            try (Connection conn = ds.getConnection();
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT 1")) {
+                if (rs.next()) {
+                    dbConnected = true;
+                    dbPingTimeMs = System.currentTimeMillis() - startTime;
+                    dbStatusMsg = "연결 성공 (Query Latency: " + dbPingTimeMs + "ms)";
+                    try {
+                        dbUrl = conn.getMetaData().getURL();
+                    } catch (Exception ignore) {
+                        dbUrl = "Spring DataSource Connected";
+                    }
+                }
+            }
+        } else {
+            dbStatusMsg = "Spring DataSource Bean을 찾을 수 없음";
         }
-        conn.close();
     } catch (Exception e) {
         dbConnected = false;
         dbStatusMsg = "DB 연결 실패 (" + e.getMessage() + ")";
@@ -283,7 +293,7 @@
         </div>
         <div>
             <a href="/" class="btn-nav">
-                <span>&larr; PetClinic 홈으로</span>
+                <span>&larr; PetClinic 메인으로</span>
             </a>
         </div>
     </div>

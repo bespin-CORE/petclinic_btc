@@ -8,9 +8,6 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-left">
-            <div class="hero-badge">
-                <span>✨ 3-Tier 클라우드 아키텍처 · WAS Tier 실행 중</span>
-            </div>
             <h1 class="hero-title">
                 소중한 반려동물의 건강,<br>
                 <span>PetClinic</span>이 함께합니다
@@ -38,22 +35,7 @@
                     <span class="hospital-tag">24H 안심 케어</span>
                 </div>
                 <h3>스마트 동물병원 헬스케어 포털</h3>
-                <p>보호자와 반려동물의 행복한 동행을 위해 맞춤형 진료 스케줄과 전문 케어를 제공합니다.</p>
-                
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">전문 의료진</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">Tomcat 9</div>
-                        <div class="stat-label">고가용 WAS</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">99.9%</div>
-                        <div class="stat-label">시스템 가동률</div>
-                    </div>
-                </div>
+                <p style="margin-bottom: 0;">보호자와 반려동물의 행복한 동행을 위해 맞춤형 진료 스케줄과 전문 케어를 제공합니다.</p>
             </div>
         </div>
     </section>
@@ -116,47 +98,6 @@
                     <span>장애 처리 검증</span>
                     <span>&rarr;</span>
                 </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3-Tier Architecture Flow Banner -->
-    <section class="arch-banner" id="architecture">
-        <div class="arch-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
-                <span class="arch-tag">Cloud Architecture</span>
-                <a href="<spring:url value="/index.html" htmlEscape="true" />" class="btn-secondary" style="font-size: 13px; padding: 8px 16px;">
-                    <span>🌐 WEB Tier 메인으로 가기 (/index.html)</span>
-                </a>
-            </div>
-            <h3 class="arch-title">3-Tier 엔터프라이즈 인프라 연동 안내</h3>
-            <p class="arch-desc">
-                현재 보고 계신 페이지는 <strong>WAS Tier (Tomcat 9 Spring App)</strong>에서 서빙되는 비즈니스 트랜잭션 진입점입니다.<br>
-                WEB Tier(Apache)의 정적 랜딩에서 진입하여 WAS를 거쳐 <strong>DB Tier (MySQL RDS)</strong>까지 안전하게 트랜잭션이 연동됩니다.
-            </p>
-
-            <div class="tier-flow">
-                <div class="tier-box">
-                    <span class="tier-badge">정적 프록시</span>
-                    <div class="tier-name">🌐 WEB Tier</div>
-                    <div class="tier-role">Apache Web Server<br>(정적 에셋 &amp; 리버스 프록시)</div>
-                </div>
-
-                <div class="tier-arrow">&rarr;</div>
-
-                <div class="tier-box active">
-                    <span class="tier-badge">현재 위치 (동적 앱)</span>
-                    <div class="tier-name">⚙️ WAS Tier</div>
-                    <div class="tier-role">Tomcat 9<br>(Spring Framework PetClinic)</div>
-                </div>
-
-                <div class="tier-arrow">&rarr;</div>
-
-                <div class="tier-box">
-                    <span class="tier-badge">데이터 영속성</span>
-                    <div class="tier-name">🗄️ DB Tier</div>
-                    <div class="tier-role">MySQL 8.0<br>(스키마 및 비즈니스 데이터)</div>
-                </div>
             </div>
         </div>
     </section>

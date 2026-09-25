@@ -18,13 +18,13 @@
                 보호자 기본 프로필
             </h3>
             <div style="display: flex; gap: 8px;">
-                <spring:url value="{ownerId}/edit" var="editUrl">
+                <spring:url value="/owners/{ownerId}/edit" var="editUrl">
                     <spring:param name="ownerId" value="${owner.id}"/>
                 </spring:url>
                 <a href="${fn:escapeXml(editUrl)}" class="btn btn-default" style="font-size: 13px; padding: 8px 14px;">
                     <span>✏️ 정보 수정</span>
                 </a>
-                <spring:url value="{ownerId}/pets/new" var="addPetUrl">
+                <spring:url value="/owners/{ownerId}/pets/new" var="addPetUrl">
                     <spring:param name="ownerId" value="${owner.id}"/>
                 </spring:url>
                 <a href="${fn:escapeXml(addPetUrl)}" class="btn btn-primary" style="font-size: 13px; padding: 8px 14px;">
@@ -75,14 +75,14 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <spring:url value="{ownerId}/pets/{petId}/edit" var="petUrl">
+                        <spring:url value="/owners/{ownerId}/pets/{petId}/edit" var="petUrl">
                             <spring:param name="ownerId" value="${owner.id}"/>
                             <spring:param name="petId" value="${pet.id}"/>
                         </spring:url>
                         <a href="${fn:escapeXml(petUrl)}" class="btn btn-default" style="font-size: 12px; padding: 6px 12px;">
                             <span>✏️ 정보 수정</span>
                         </a>
-                        <spring:url value="{ownerId}/pets/{petId}/visits/new" var="visitUrl">
+                        <spring:url value="/owners/{ownerId}/pets/{petId}/visits/new" var="visitUrl">
                             <spring:param name="ownerId" value="${owner.id}"/>
                             <spring:param name="petId" value="${pet.id}"/>
                         </spring:url>

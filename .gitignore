@@ -10,3 +10,7 @@ bin/
 
 # Maven
 target/
+
+# Test Reports
+ramp_test_report/
+smoke_report/
