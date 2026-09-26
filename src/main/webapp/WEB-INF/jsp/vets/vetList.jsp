@@ -8,7 +8,7 @@
     <div class="page-title-wrap" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
         <div>
             <h2>🩺 전문 수의사 명단</h2>
-            <p>PetClinic에서 진료를 담당하는 전문 의료진과 세부 진료 분과입니다.</p>
+            <p>Vetcore에서 진료를 담당하는 전문 의료진과 세부 진료 분과입니다.</p>
         </div>
         <div style="display: flex; gap: 8px;">
             <a href="<spring:url value="/vets.xml" htmlEscape="true" />" class="btn-secondary" style="font-size: 13px; padding: 8px 16px;">
@@ -31,7 +31,7 @@
             <tbody>
             <c:forEach items="${vets.vetList}" var="vet">
                 <tr>
-                    <td style="font-weight: 700; color: #0f172a;">
+                    <td style="font-weight: 700; color: var(--text-main);">
                         🩺 Dr. <c:out value="${vet.firstName} ${vet.lastName}"/>
                     </td>
                     <td>

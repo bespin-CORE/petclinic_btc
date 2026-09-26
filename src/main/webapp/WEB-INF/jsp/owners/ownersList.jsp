@@ -34,7 +34,7 @@
                         <spring:url value="/owners/{ownerId}" var="ownerUrl">
                             <spring:param name="ownerId" value="${owner.id}"/>
                         </spring:url>
-                        <a href="${fn:escapeXml(ownerUrl)}" style="font-weight: 700; color: #2563eb; text-decoration: none;">
+                        <a href="${fn:escapeXml(ownerUrl)}" style="font-weight: 700; color: var(--primary); text-decoration: none;">
                             <c:out value="${owner.firstName} ${owner.lastName}"/>
                         </a>
                     </td>

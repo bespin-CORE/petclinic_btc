@@ -32,7 +32,7 @@
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
 
 
-    <mvc:view-controller path="/" view-name="welcome"/>
+    <mvc:redirect-view-controller path="/" redirect-url="/" context-relative="false"/>
 
     <!-- serve static resources (*.html, ...) from src/main/webapp/
     Required when both servlet-mapping is '/' and static resources need to be served -->

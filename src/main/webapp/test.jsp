@@ -2,10 +2,7 @@
 <%@ page import="java.net.InetAddress" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.lang.management.ManagementFactory" %>
-<%@ page import="java.lang.management.RuntimeMXBean" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.DriverManager" %>
 <%@ page import="java.sql.Statement" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="javax.sql.DataSource" %>
@@ -13,10 +10,11 @@
 <%@ page import="org.springframework.context.ApplicationContext" %>
 <%
     // =========================================================================
-    // 3-Tier 엔드투엔드 헬스체크 대시보드 (test.jsp)
+    // 3-Tier 연동 진단 — WEB → WAS → DB 요청 전달 및 연결 확인용
+    // 과제 제공 자료(test.jsp)와 동일한 목적. 연동 확인에 필요한 항목만 표시한다.
     // =========================================================================
 
-    // 1. WAS 서버 호스트 정보
+    // 1. 요청을 처리한 WAS 인스턴스 (ALB 분산 확인용)
     String hostname = "Unknown";
     String hostIp = "Unknown";
     try {
@@ -27,29 +25,9 @@
         hostname = "Error: " + e.getMessage();
     }
 
-    // 2. 가동 시간(Uptime) 및 자바 런타임 환경
-    RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-    long uptimeMs = rb.getUptime();
-    long uptimeSec = uptimeMs / 1000;
-    long uptimeMin = uptimeSec / 60;
-    long uptimeHour = uptimeMin / 60;
-    String uptimeStr = String.format("%d시간 %d분 %d초", uptimeHour, uptimeMin % 60, uptimeSec % 60);
-
-    String javaVersion = System.getProperty("java.version");
-    String javaVendor = System.getProperty("java.vendor");
-    String osName = System.getProperty("os.name");
-    String osArch = System.getProperty("os.arch");
-
-    // 3. JVM 메모리 상태
-    Runtime runtime = Runtime.getRuntime();
-    long maxMemory = runtime.maxMemory() / (1024 * 1024);
-    long totalMemory = runtime.totalMemory() / (1024 * 1024);
-    long freeMemory = runtime.freeMemory() / (1024 * 1024);
-    long usedMemory = totalMemory - freeMemory;
-    int memUsagePercent = (int) ((usedMemory * 100) / totalMemory);
-
-    // 4. 클라이언트 요청 분석 (X-Forwarded-For 등)
-    String clientIp = request.getHeader("X-Forwarded-For");
+    // 2. WEB → WAS 요청 전달 경로
+    String xff = request.getHeader("X-Forwarded-For");
+    String clientIp = xff;
     if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
         clientIp = request.getHeader("Proxy-Client-IP");
     }
@@ -60,12 +38,12 @@
     if (proto == null) proto = request.getScheme();
     String albTraceId = request.getHeader("X-Amzn-Trace-Id");
 
-    // 5. DB 연결 상태 테스트 (Spring DataSource 연동 및 RDS MySQL / H2 감지)
+    // 3. WAS → DB 연결 (Spring이 구성한 DataSource를 그대로 검증 — 접속정보 하드코딩 없음)
     boolean dbConnected = false;
     String dbStatusMsg = "Checking...";
     long dbPingTimeMs = -1;
     String dbUrl = "Unknown";
-    
+
     try {
         ApplicationContext ac = WebApplicationContextUtils.getWebApplicationContext(application);
         DataSource ds = (ac != null) ? ac.getBean(DataSource.class) : null;
@@ -77,7 +55,7 @@
                 if (rs.next()) {
                     dbConnected = true;
                     dbPingTimeMs = System.currentTimeMillis() - startTime;
-                    dbStatusMsg = "연결 성공 (Query Latency: " + dbPingTimeMs + "ms)";
+                    dbStatusMsg = "연결 성공";
                     try {
                         dbUrl = conn.getMetaData().getURL();
                     } catch (Exception ignore) {
@@ -90,10 +68,10 @@
         }
     } catch (Exception e) {
         dbConnected = false;
-        dbStatusMsg = "DB 연결 실패 (" + e.getMessage() + ")";
+        dbStatusMsg = "연결 실패 — " + e.getMessage();
     }
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS (z)");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss (z)");
     String currentTimeStr = sdf.format(new Date());
 %>
 <!DOCTYPE html>
@@ -101,324 +79,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAS Tier 인프라 진단 대시보드 · PetClinic</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>3-Tier 연동 진단 · Vetcore</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
     <style>
+        /* WEB/WAS와 동일한 다크·골드 팔레트 */
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --primary-light: #eff6ff;
-            --secondary: #059669;
-            --secondary-light: #ecfdf5;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --bg-body: #f8fafc;
-            --bg-card: #ffffff;
-            --border: #e2e8f0;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+            --gold: #ceac54;
+            --gold-light: #eacc7c;
+            --on-gold: #241d0c;
+            --bg: #050506;
+            --card: #121215;
+            --raised: #1b1b20;
+            --line: rgba(255, 255, 255, 0.14);
+            --txt: #ffffff;
+            --muted: rgba(255, 255, 255, 0.62);
+            --ok: #34d399;
+            --ng: #f87171;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
+            font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--txt);
             line-height: 1.6;
-            min-height: 100vh;
-            padding: 32px 20px;
+            padding: 48px 24px;
             display: flex;
             justify-content: center;
         }
-        .container {
-            width: 100%;
-            max-width: 960px;
-        }
-        .header-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px 28px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
+        .wrap { width: 100%; max-width: 880px; }
+        .head {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             flex-wrap: wrap;
             gap: 16px;
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--line);
         }
-        .header-title-wrap {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .head-left { display: flex; align-items: center; gap: 14px; }
+        .mark {
+            width: 46px; height: 46px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold-light), #a8873a);
+            display: grid; place-items: center; font-size: 22px;
         }
-        .icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--primary-light);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
+        .head h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+        .head p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+        .back {
+            padding: 10px 18px; border: 1px solid rgba(206, 172, 84, 0.55);
+            border-radius: 999px; color: var(--gold);
+            font-size: 13px; font-weight: 700; text-decoration: none;
+            white-space: nowrap; transition: all 0.2s ease;
         }
-        .header-text h1 {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-main);
-        }
-        .header-text p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-        .section-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+        .back:hover { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
             padding: 22px 24px;
-            box-shadow: var(--shadow-sm);
+            margin-bottom: 18px;
         }
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 14px;
+        .card-head {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding-bottom: 12px; margin-bottom: 14px;
+            border-bottom: 1px solid var(--line);
         }
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .card-title { font-size: 15px; font-weight: 700; }
+        .card-title em { font-style: normal; color: var(--muted); font-weight: 600; font-size: 13px; margin-left: 6px; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 999px;
+            font-size: 12px; font-weight: 700;
         }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 9999px;
-        }
-        .status-badge.ok {
-            background: var(--secondary-light);
-            color: var(--secondary);
-            border: 1px solid rgba(5, 150, 105, 0.2);
-        }
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--secondary);
-        }
-        .info-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-        }
-        .info-label {
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .info-val {
-            font-weight: 700;
-            color: var(--text-main);
-            font-family: 'Consolas', 'Courier New', monospace;
-            background: #f1f5f9;
-            padding: 2px 8px;
-            border-radius: 6px;
-            max-width: 260px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .footer-note {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 24px;
-        }
-        .btn-nav {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--primary);
-            color: #ffffff;
+        .badge.ok { background: rgba(52, 211, 153, 0.14); color: var(--ok); border: 1px solid rgba(52, 211, 153, 0.35); }
+        .badge.ng { background: rgba(248, 113, 113, 0.14); color: var(--ng); border: 1px solid rgba(248, 113, 113, 0.35); }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+        .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 9px 0; font-size: 14px; }
+        .row + .row { border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .k { color: var(--muted); }
+        .v {
+            font-family: 'Consolas', 'Menlo', monospace;
             font-weight: 600;
-            font-size: 13px;
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            transition: all 0.2s ease;
+            background: var(--raised);
+            border: 1px solid var(--line);
+            padding: 3px 10px; border-radius: 6px;
+            max-width: 62%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .btn-nav:hover {
-            background: var(--primary-hover);
-        }
+        .v.warn { color: var(--ng); }
     </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-    <div class="header-card">
-        <div class="header-title-wrap">
-            <div class="icon-box">🐾</div>
-            <div class="header-text">
-                <h1>WAS Tier 상태 진단 대시보드</h1>
-                <p>AWS 3-Tier Enterprise Cloud Architecture · Team 2 CORE</p>
+    <div class="head">
+        <div class="head-left">
+            <span class="mark">🐾</span>
+            <div>
+                <h1>3-Tier 연동 진단</h1>
+                <p>WEB → WAS → DB 요청 전달 및 연결 확인 · <%= currentTimeStr %></p>
             </div>
         </div>
-        <div>
-            <a href="/" class="btn-nav">
-                <span>&larr; PetClinic 메인으로</span>
-            </a>
-        </div>
+        <a href="/" class="back">&larr; 메인으로</a>
     </div>
 
-    <div class="grid-2">
-        <!-- Card 1: WAS Server Spec -->
-        <div class="section-card">
-            <div class="section-header">
-                <span class="section-title">⚙️ WAS 인스턴스 정보</span>
-                <span class="status-badge ok"><span class="status-dot"></span> 정상 가동 중</span>
-            </div>
-            <ul class="info-list">
-                <li class="info-item">
-                    <span class="info-label">호스트명 (Hostname)</span>
-                    <span class="info-val"><%= hostname %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">내부 IP (Private IP)</span>
-                    <span class="info-val"><%= hostIp %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">서버 가동 시간 (Uptime)</span>
-                    <span class="info-val"><%= uptimeStr %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">운영체제 환경</span>
-                    <span class="info-val"><%= osName %> (<%= osArch %>)</span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">측정 시각</span>
-                    <span class="info-val"><%= currentTimeStr %></span>
-                </li>
-            </ul>
+    <!-- 1. 이 요청을 처리한 WAS 인스턴스 -->
+    <div class="card">
+        <div class="card-head">
+            <span class="card-title">⚙️ WAS 인스턴스<em>요청을 처리한 서버</em></span>
+            <span class="badge ok"><span class="dot"></span>응답 정상</span>
         </div>
-
-        <!-- Card 2: JVM Runtime & Memory -->
-        <div class="section-card">
-            <div class="section-header">
-                <span class="section-title">☕ JVM 런타임 &amp; 힙 메모리</span>
-                <span class="status-badge ok"><span class="status-dot"></span> Heap 정상</span>
-            </div>
-            <ul class="info-list">
-                <li class="info-item">
-                    <span class="info-label">자바 버전 (Java Runtime)</span>
-                    <span class="info-val"><%= javaVendor %> <%= javaVersion %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">할당된 힙 (Total Heap)</span>
-                    <span class="info-val"><%= totalMemory %> MB</span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">현재 사용량 (Used Heap)</span>
-                    <span class="info-val"><%= usedMemory %> MB (<%= memUsagePercent %>%)</span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">최대 허용 메모리 (Max Heap)</span>
-                    <span class="info-val"><%= maxMemory %> MB</span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">여유 메모리 (Free Heap)</span>
-                    <span class="info-val"><%= freeMemory %> MB</span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Card 3: Reverse Proxy & Client Request Header -->
-        <div class="section-card">
-            <div class="section-header">
-                <span class="section-title">🌐 L7 프록시 및 클라이언트 헤더</span>
-                <span class="status-badge ok"><span class="status-dot"></span> X-Forwarded 정상</span>
-            </div>
-            <ul class="info-list">
-                <li class="info-item">
-                    <span class="info-label">실제 클라이언트 IP</span>
-                    <span class="info-val"><%= clientIp %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">인입 프로토콜</span>
-                    <span class="info-val"><%= proto.toUpperCase() %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">ALB 추적 ID (Trace-Id)</span>
-                    <span class="info-val"><%= (albTraceId != null) ? albTraceId : "로컬 직접 접속" %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">세션 ID (HttpSession)</span>
-                    <span class="info-val"><%= session.getId() %></span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Card 4: Database Connection Status -->
-        <div class="section-card">
-            <div class="section-header">
-                <span class="section-title">🗄️ DB Tier 연동 상태</span>
-                <span class="status-badge <%= dbConnected ? "ok" : "" %>" style="<%= !dbConnected ? "background:#fef2f2; color:#ef4444;" : "" %>">
-                    <span class="status-dot" style="<%= !dbConnected ? "background:#ef4444;" : "" %>"></span>
-                    <%= dbConnected ? "DB 정상 연결" : "연결 지연/실패" %>
-                </span>
-            </div>
-            <ul class="info-list">
-                <li class="info-item">
-                    <span class="info-label">연결 상태 메시지</span>
-                    <span class="info-val"><%= dbStatusMsg %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">연결 타겟 데이터베이스</span>
-                    <span class="info-val"><%= dbUrl %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">질의 지연시간 (Ping)</span>
-                    <span class="info-val"><%= (dbPingTimeMs >= 0) ? (dbPingTimeMs + " ms") : "N/A" %></span>
-                </li>
-                <li class="info-item">
-                    <span class="info-label">세션 스토리지 연동</span>
-                    <span class="info-val">ElastiCache Redis 연동 준비됨</span>
-                </li>
-            </ul>
-        </div>
+        <div class="row"><span class="k">호스트명</span><span class="v"><%= hostname %></span></div>
+        <div class="row"><span class="k">내부 IP</span><span class="v"><%= hostIp %></span></div>
     </div>
 
-    <div class="footer-note">
-        PetClinic WAS Tier &bull; Apache Tomcat 9 &bull; Spring Framework &bull; MySQL &bull; Redis
+    <!-- 2. WEB → WAS 요청 전달 경로 -->
+    <div class="card">
+        <div class="card-head">
+            <span class="card-title">🌐 요청 전달 경로<em>WEB → WAS</em></span>
+            <span class="badge <%= (xff != null) ? "ok" : "ng" %>">
+                <span class="dot"></span><%= (xff != null) ? "프록시 경유 확인" : "직접 접속" %>
+            </span>
+        </div>
+        <div class="row"><span class="k">클라이언트 IP</span><span class="v"><%= clientIp %></span></div>
+        <div class="row"><span class="k">X-Forwarded-For</span><span class="v"><%= (xff != null) ? xff : "-" %></span></div>
+        <div class="row"><span class="k">X-Forwarded-Proto</span><span class="v"><%= proto %></span></div>
+        <div class="row"><span class="k">ALB Trace-Id</span><span class="v"><%= (albTraceId != null) ? albTraceId : "-" %></span></div>
     </div>
+
+    <!-- 3. WAS → DB 연결 -->
+    <div class="card">
+        <div class="card-head">
+            <span class="card-title">🗄️ DB 연동<em>WAS → DB</em></span>
+            <span class="badge <%= dbConnected ? "ok" : "ng" %>">
+                <span class="dot"></span><%= dbConnected ? "연결 정상" : "연결 실패" %>
+            </span>
+        </div>
+        <div class="row">
+            <span class="k">상태</span>
+            <span class="v <%= dbConnected ? "" : "warn" %>"><%= dbStatusMsg %></span>
+        </div>
+        <div class="row"><span class="k">대상 DB</span><span class="v"><%= dbUrl %></span></div>
+        <div class="row"><span class="k">응답 시간</span><span class="v"><%= (dbPingTimeMs >= 0) ? (dbPingTimeMs + " ms") : "-" %></span></div>
+    </div>
+
 </div>
-
 </body>
 </html>

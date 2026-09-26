@@ -10,12 +10,10 @@
     <spring:url value="/resources/images/favicon.png" var="favicon"/>
     <link rel="shortcut icon" type="image/x-icon" href="${favicon}">
 
-    <title>PetClinic · 스마트 반려동물 케어 센터 (WAS Tier)</title>
+    <title>Vetcore · 스마트 반려동물 케어 센터 (WAS Tier)</title>
 
-    <!-- Google Font: Pretendard -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 
     <!-- Core Bootstrap & Petclinic CSS -->
     <spring:url value="/resources/css/petclinic.css" var="petclinicCss"/>

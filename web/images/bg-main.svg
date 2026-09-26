@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1710"/>
+      <stop offset="55%" stop-color="#0d0c0e"/>
+      <stop offset="100%" stop-color="#050506"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="62%" cy="26%" r="52%">
+      <stop offset="0%" stop-color="#cba749" stop-opacity="0.34"/>
+      <stop offset="60%" stop-color="#8a6f2e" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="72%">
+      <stop offset="55%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.72"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+      <path d="M0 0 H64" stroke="#ffffff" stroke-opacity="0.028" stroke-width="1"/>
+      <path d="M0 0 V64" stroke="#ffffff" stroke-opacity="0.018" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#base)"/>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  <rect width="1920" height="1080" fill="url(#glow)"/>
+
+  <g stroke="#cba749" stroke-opacity="0.14" fill="none">
+    <path d="M-100 820 C 420 640, 900 900, 1400 700 S 2000 560, 2100 620"/>
+    <path d="M-100 900 C 380 760, 940 980, 1460 780 S 2020 660, 2100 700" stroke-opacity="0.08"/>
+  </g>
+  <g fill="#e3c887" fill-opacity="0.18">
+    <circle cx="315" cy="238" r="2.5"/>
+    <circle cx="1585" cy="182" r="2"/>
+    <circle cx="1712" cy="742" r="2.5"/>
+    <circle cx="248" cy="678" r="2"/>
+    <circle cx="965" cy="128" r="1.8"/>
+    <circle cx="1390" cy="948" r="2.2"/>
+  </g>
+
+  <rect width="1920" height="1080" fill="url(#vignette)"/>
+</svg>

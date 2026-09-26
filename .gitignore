@@ -14,3 +14,8 @@ target/
 # Test Reports
 ramp_test_report/
 smoke_report/
+
+# JMeter load test artifacts
+*.jtl
+*.log
+src/test/jmeter/report_*/

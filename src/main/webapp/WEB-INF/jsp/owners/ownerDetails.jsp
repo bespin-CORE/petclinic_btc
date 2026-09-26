@@ -14,7 +14,7 @@
     <!-- Owner Information Card -->
     <div class="modern-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
-            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0;">
                 보호자 기본 프로필
             </h3>
             <div style="display: flex; gap: 8px;">
@@ -37,19 +37,19 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <th style="width: 25%; background: #f8fafc; font-weight: 700; color: #475569;">성명 (Name)</th>
-                    <td style="font-weight: 700; color: #0f172a;"><c:out value="${owner.firstName} ${owner.lastName}"/></td>
+                    <th style="width: 25%; background: var(--bg-raised); font-weight: 700; color: var(--text-muted);">성명 (Name)</th>
+                    <td style="font-weight: 700; color: var(--text-main);"><c:out value="${owner.firstName} ${owner.lastName}"/></td>
                 </tr>
                 <tr>
-                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">주소 (Address)</th>
+                    <th style="background: var(--bg-raised); font-weight: 700; color: var(--text-muted);">주소 (Address)</th>
                     <td><c:out value="${owner.address}"/></td>
                 </tr>
                 <tr>
-                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">도시 (City)</th>
+                    <th style="background: var(--bg-raised); font-weight: 700; color: var(--text-muted);">도시 (City)</th>
                     <td><c:out value="${owner.city}"/></td>
                 </tr>
                 <tr>
-                    <th style="background: #f8fafc; font-weight: 700; color: #475569;">연락처 (Telephone)</th>
+                    <th style="background: var(--bg-raised); font-weight: 700; color: var(--text-muted);">연락처 (Telephone)</th>
                     <td><c:out value="${owner.telephone}"/></td>
                 </tr>
                 </tbody>
@@ -59,19 +59,19 @@
 
     <!-- Pets and Visits Section -->
     <div class="modern-card">
-        <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
+        <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0 0 20px 0; border-bottom: 1px solid var(--border); padding-bottom: 14px;">
             반려동물 및 진료/방문 기록
         </h3>
 
         <c:forEach var="pet" items="${owner.pets}">
-            <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <div style="background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 20px;">🐶</span>
                         <div>
-                            <span style="font-size: 17px; font-weight: 800; color: #0f172a;"><c:out value="${pet.name}"/></span>
+                            <span style="font-size: 17px; font-weight: 800; color: var(--text-main);"><c:out value="${pet.name}"/></span>
                             <span class="badge-specialty" style="margin-left: 8px;"><c:out value="${pet.type.name}"/></span>
-                            <span style="font-size: 12px; color: #64748b; margin-left: 8px;">생년월일: <petclinic:localDate date="${pet.birthDate}" pattern="yyyy-MM-dd"/></span>
+                            <span style="font-size: 12px; color: var(--text-muted); margin-left: 8px;">생년월일: <petclinic:localDate date="${pet.birthDate}" pattern="yyyy-MM-dd"/></span>
                         </div>
                     </div>
                     <div style="display: flex; gap: 8px;">
@@ -104,7 +104,7 @@
                         <tbody>
                         <c:forEach var="visit" items="${pet.visits}">
                             <tr>
-                                <td style="font-weight: 600; color: #0f172a;">
+                                <td style="font-weight: 600; color: var(--text-main);">
                                     <petclinic:localDate date="${visit.date}" pattern="yyyy-MM-dd"/>
                                 </td>
                                 <td><c:out value="${visit.description}"/></td>
@@ -112,7 +112,7 @@
                         </c:forEach>
                         <c:if test="${empty pet.visits}">
                             <tr>
-                                <td colspan="2" style="text-align: center; color: #94a3b8; padding: 18px;">
+                                <td colspan="2" style="text-align: center; color: var(--text-muted); padding: 18px;">
                                     등록된 진료 및 방문 이력이 없습니다.
                                 </td>
                             </tr>
@@ -124,7 +124,7 @@
         </c:forEach>
 
         <c:if test="${empty owner.pets}">
-            <div style="text-align: center; padding: 32px; color: #94a3b8;">
+            <div style="text-align: center; padding: 32px; color: var(--text-muted);">
                 등록된 반려동물이 없습니다. 상단의 '신규 반려동물 추가' 버튼을 눌러 등록해주세요.
             </div>
         </c:if>

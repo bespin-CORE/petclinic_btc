@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sbase" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#0b0d12"/>
+      <stop offset="60%" stop-color="#070709"/>
+      <stop offset="100%" stop-color="#040405"/>
+    </linearGradient>
+    <radialGradient id="sglow" cx="22%" cy="72%" r="55%">
+      <stop offset="0%" stop-color="#cba749" stop-opacity="0.16"/>
+      <stop offset="70%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="svignette" cx="50%" cy="50%" r="70%">
+      <stop offset="50%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.6"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sbase)"/>
+
+  <g stroke="#7f93b5" stroke-opacity="0.12" fill="none" stroke-width="1">
+    <path d="M160 180 L470 320 L760 210 L1080 360 L1420 250 L1780 400"/>
+    <path d="M120 620 L430 720 L700 600 L1010 780 L1340 640 L1700 820"/>
+    <path d="M470 320 L430 720"/>
+    <path d="M760 210 L700 600"/>
+    <path d="M1080 360 L1010 780"/>
+    <path d="M1420 250 L1340 640"/>
+  </g>
+  <g fill="#8ea6c9" fill-opacity="0.3">
+    <circle cx="470" cy="320" r="3"/>
+    <circle cx="760" cy="210" r="3"/>
+    <circle cx="1080" cy="360" r="3"/>
+    <circle cx="1420" cy="250" r="3"/>
+    <circle cx="430" cy="720" r="3"/>
+    <circle cx="700" cy="600" r="3"/>
+    <circle cx="1010" cy="780" r="3"/>
+    <circle cx="1340" cy="640" r="3"/>
+  </g>
+
+  <rect width="1920" height="1080" fill="url(#sglow)"/>
+  <rect width="1920" height="1080" fill="url(#svignette)"/>
+</svg>

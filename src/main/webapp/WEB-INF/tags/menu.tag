@@ -4,58 +4,40 @@
 <%@ attribute name="name" required="true" rtexprvalue="true"
               description="Name of the active menu: home, owners, vets or error" %>
 
-<header>
-    <div class="nav-container">
-        <a href="<spring:url value="/" htmlEscape="true" />" class="logo-group">
-            <div class="logo-icon">🐾</div>
-            <div class="logo-text">
-                <span class="logo-title">PetClinic</span>
-                <span class="logo-subtitle">Smart Animal Hospital · WAS Tier</span>
-            </div>
+<%-- WEB 티어 랜딩(web/index.html)의 헤더와 동일한 마크업/클래스를 사용한다.
+     스타일은 css/style.css의 "Shared Header" 섹션(landing.css와 동일 규칙)에 있다. --%>
+<header class="mv-header" id="mvHeader">
+    <div class="mv-header-inner">
+        <a href="/" class="mv-logo">
+            <span class="mv-logo-mark">🐾</span>
+            <span class="mv-logo-text">
+                <strong>Vetcore</strong>
+                <span>Smart Animal Hospital</span>
+            </span>
         </a>
 
-        <!-- Mobile Hamburger Toggle Button -->
-        <button type="button" class="mobile-menu-toggle" id="mobile-toggle" aria-label="메뉴 토글" onclick="toggleMobileNav()">
-            <span class="toggle-bar"></span>
-            <span class="toggle-bar"></span>
-            <span class="toggle-bar"></span>
+        <button type="button" class="mv-nav-toggle" id="mvNavToggle" aria-label="메뉴 토글">
+            <span></span><span></span><span></span>
         </button>
 
-        <!-- Navigation Links and Status Badge -->
-        <div class="header-nav-wrap" id="header-nav">
-            <nav class="nav-menu">
-                <a href="<spring:url value="/" htmlEscape="true" />" class="nav-item ${name eq 'home' ? 'active' : ''}">
-                    <span>🏠 홈</span>
-                </a>
-                <a href="<spring:url value="/owners/find" htmlEscape="true" />" class="nav-item ${name eq 'owners' ? 'active' : ''}">
-                    <span>📋 보호자 &amp; 환자</span>
-                </a>
-                <a href="<spring:url value="/vets" htmlEscape="true" />" class="nav-item ${name eq 'vets' ? 'active' : ''}">
-                    <span>🩺 수의사 명단</span>
-                </a>
-                <a href="<spring:url value="/oups" htmlEscape="true" />" class="nav-item ${name eq 'error' ? 'active' : ''}">
-                    <span>⚡ 장애 검증</span>
-                </a>
-                <a href="<spring:url value="/test.jsp" htmlEscape="true" />" class="nav-item">
-                    <span>📊 3-Tier 진단</span>
-                </a>
-                <a href="<spring:url value="/index.html" htmlEscape="true" />" class="nav-item nav-item-web">
-                    <span>🌐 WEB 메인</span>
-                </a>
-            </nav>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span>WAS Tier 정상 서빙 중</span>
-            </div>
-        </div>
+        <nav class="mv-gnb" id="mvGnb">
+            <a href="/">홈</a>
+            <a href="<spring:url value="/owners/find" htmlEscape="true" />" class="${name eq 'owners' ? 'on' : ''}">보호자 &amp; 환자</a>
+            <a href="<spring:url value="/vets" htmlEscape="true" />" class="${name eq 'vets' ? 'on' : ''}">수의사 명단</a>
+            <a href="<spring:url value="/oups" htmlEscape="true" />" class="${name eq 'error' ? 'on' : ''}">장애 검증</a>
+            <a href="<spring:url value="/test.jsp" htmlEscape="true" />">3-Tier 진단</a>
+        </nav>
     </div>
 </header>
 
 <script>
-function toggleMobileNav() {
-    var nav = document.getElementById('header-nav');
-    var btn = document.getElementById('mobile-toggle');
-    if (nav) nav.classList.toggle('open');
-    if (btn) btn.classList.toggle('open');
-}
+(function () {
+    var gnb = document.getElementById('mvGnb');
+    var toggle = document.getElementById('mvNavToggle');
+    if (toggle && gnb) {
+        toggle.addEventListener('click', function () {
+            gnb.classList.toggle('open');
+        });
+    }
+})();
 </script>

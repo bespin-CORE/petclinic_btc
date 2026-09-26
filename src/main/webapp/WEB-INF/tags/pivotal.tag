@@ -1,15 +1,10 @@
 <%@ tag pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<footer>
-    <div class="footer-container">
-        <div class="footer-left">
-            <span class="footer-logo">🐾 PetClinic</span>
-            <span>|</span>
-            <span>AWS 3-Tier Enterprise Cloud Architecture</span>
-        </div>
-        <div class="footer-right">
-            <span>Apache Tomcat 9 &bull; Spring Framework &bull; MySQL 8.0 &bull; Redis 7.x</span>
-        </div>
+<%-- WEB 티어 랜딩(web/index.html)의 푸터와 동일한 마크업/클래스를 사용한다. --%>
+<footer class="mv-footer">
+    <div class="mv-footer-inner">
+        <span><strong>🐾 Vetcore</strong> &nbsp;|&nbsp; Smart Animal Hospital Care Portal</span>
+        <span>Copyright &copy; 2026 Vetcore. All rights reserved.</span>
     </div>
 </footer>

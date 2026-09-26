@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="cbase" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0%" stop-color="#050506"/>
+      <stop offset="45%" stop-color="#100e0b"/>
+      <stop offset="100%" stop-color="#1b1710"/>
+    </linearGradient>
+    <radialGradient id="cglow" cx="78%" cy="62%" r="55%">
+      <stop offset="0%" stop-color="#e0bd6d" stop-opacity="0.22"/>
+      <stop offset="65%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cvignette" cx="50%" cy="50%" r="72%">
+      <stop offset="52%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.7"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#cbase)"/>
+
+  <g stroke="#e0bd6d" stroke-opacity="0.1" fill="none" stroke-width="1.5">
+    <circle cx="1420" cy="640" r="180"/>
+    <circle cx="1420" cy="640" r="300"/>
+    <circle cx="1420" cy="640" r="430"/>
+    <circle cx="1420" cy="640" r="560"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity="0.05" fill="none">
+    <path d="M-40 300 C 360 200, 760 420, 1180 300 S 1860 180, 1980 260"/>
+    <path d="M-40 880 C 420 780, 820 960, 1240 860 S 1880 760, 1980 800"/>
+  </g>
+
+  <rect width="1920" height="1080" fill="url(#cglow)"/>
+  <rect width="1920" height="1080" fill="url(#cvignette)"/>
+</svg>
