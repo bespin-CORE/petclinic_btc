@@ -23,15 +23,16 @@
     <context:property-placeholder location="classpath:spring/data-access.properties" system-properties-mode="OVERRIDE"/>
 
     <!-- DataSource configuration for the tomcat jdbc connection pool -->
-    <!-- 수학적 용량 산정 기반 maxActive=30 엄격 격리 (WAS 4대 확장 시 120개로 RDS 150개 중 20% 안전 마진 확보) -->
+    <!-- maxActive/initialSize/minIdle/maxWait는 배포 시 launch template이 SSM 파라미터로 주입하는
+         jdbc.* 시스템 프로퍼티를 따른다 (WAS 인스턴스 대수 x maxActive가 RDS max_connections을 넘지 않도록 SSM 쪽에서 관리) -->
     <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource"
           p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}"
           p:username="${jdbc.username}" p:password="${jdbc.password}"
-          p:maxActive="30"
-          p:initialSize="10"
+          p:maxActive="${jdbc.maxActive}"
+          p:initialSize="${jdbc.initialSize}"
           p:maxIdle="10"
-          p:minIdle="5"
-          p:maxWait="5000"
+          p:minIdle="${jdbc.minIdle}"
+          p:maxWait="${jdbc.maxWait}"
           p:testOnBorrow="true"
           p:validationQuery="SELECT 1"/>
 

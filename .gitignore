@@ -18,4 +18,6 @@ smoke_report/
 # JMeter load test artifacts
 *.jtl
 *.log
+*.stdout
 src/test/jmeter/report_*/
+src/test/jmeter/results/
